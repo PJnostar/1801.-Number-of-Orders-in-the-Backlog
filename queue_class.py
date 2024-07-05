@@ -20,22 +20,31 @@ class Solution(object):
         #   If that sell order's price is smaller than or equal to the current buy order's price, they will 
         #   match and be executed, and that sell order will be removed from the backlog"
 
+        #MJ: You could add def price(order) :type order: List[int]
+        #                              return order[0]
+        #Then you can use price(order), amount(order), type(order) everywhere and forget the indices
 
         # funkcja znajdujaca indeks, w ktorym miejscu trzeba wstawic zamowienia, dla rosnących zamowien 
         def find_where_to_add_order_in_increasing_order(queue_inc, item_price):
+            #MJ: Do you even need the n variable? len(queue_inc) is actually more readable than n
             n = len(queue_inc)
+            #MJ: queue_inc[-1] ?
             if (queue_inc[n-1] <= item_price):          #wstawic orders na koniec listy
+                #MJ: Do you even need the index_to_add variable? Just return len(queue_inc)?
                 index_to_add = n
                 # queue_inc = queue_inc + orders
                 return index_to_add
             if (queue_inc[0] >= item_price):            #wstawic orders na początek listy
+                #MJ: ^ Just return 0?
                 index_to_add = 0
                 # queue_inc = orders + queue_inc
                 return index_to_add
             for i in range(0,n-1):
+                #MJ: queue is by definition sorted, so would just if(queue_inc[i] > item_price) work?
                 if (queue_inc[i] <= item_price and queue_inc[i+1] > item_price ): #wstawić order gdzieś w środku
                     # queue_inc = queue_inc[:i+1] + orders + queue_inc[i+1:]
                     index_to_add = i
+                    #MJ: no need to break, just return i?
                     break
             return index_to_add
         
@@ -49,6 +58,7 @@ class Solution(object):
                 index_to_add = 0
                 return index_to_add
             for i in range(0,n-1):
+                #MJ: would simply if(queue_dec[i] < item_price) work?
                 if (queue_inc[i] >= item_price and queue_inc[i+1] < item_price ): #wstawić order gdzieś w środku
                     # queue_inc = queue_inc[:i+1] + orders + queue_inc[i+1:]
                     index_to_add = i
@@ -62,7 +72,9 @@ class Solution(object):
             if queue_inc == [] :                        #queue jest pusta -> zrobic liste dodac orders
                 queue_inc = orders
                 return queue_inc
+            #MJ: do we even need to custom make it? queue_inc.append(item_price) and then queue_inc.sort()?
             index_to_add = find_where_to_add_order_in_increasing_order(queue_inc, item_price)
+            #MJ: will create a new list, should use queue_inc.insert(index_to_add, item_price)?
             queue_inc = queue_inc[:index_to_add] + orders + queue_inc[index_to_add:]
             return queue_inc
 
@@ -94,6 +106,8 @@ class Solution(object):
         backlog_sell = []
         for order in orders:
             print(order)
+            #MJ: Should add a class OrderType(Enum): BUY = 0, SELL = 1
+            #MJ: This then could be something more readable like if (orderType(order) == OrderType.BUY) 
             if (order[2] == 0):
                 buy_items_from_backlog_sell(backlog_sell, order)
                 backlog_buy = queue_inc_add_item(backlog_buy, order[0], order[1])
@@ -106,7 +120,11 @@ class Solution(object):
 """ 
         queue_inc_test = [1,2,3,4,5]
         item = [7,3,1]
+        #MJ: naming, avoid N, use meaningful names, like queue_inc_actual_result
         N = queue_inc_add_item(queue_inc_test, item[0], item[1])
+        #MJ: instead of printing, actually test this
+        #MJ: queue_inc_expected_result = [1,2,3,4,5,7,7,7]
+        #MJ: if queue_inc_expected_result == queue_inc_actual_result: print("OK") else print("FAILED. Expected ", queue_inc_expected_result, " but was ", queue_inc_actual_result) 
         print(N)
 
         queue_dec_test = [5,4,3,2,1]
