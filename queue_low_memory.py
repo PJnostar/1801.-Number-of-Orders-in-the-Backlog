@@ -57,6 +57,16 @@ class Solution(object):
             if backlog_sell.size == 0 :                                                 #backlog_sell jest pusty -> 
                 backlog_buy = queue_dec_add_item(backlog_buy, order[0], order[1])
             else:
+                #this part gets complicated
+                #Trzeba sprawdzić kilka rzeczy:
+                # 1) czy wartosc zamowienia order jest wystarczajaca, żeby kupić z backlog_sell. Jeśli nie, to ordery 
+                #    wpadaja do backlog_buy
+                # 2) czy ilość zamowień w order jest wieksza niz ilosc zamowien w backlog_sell. Jesli tak, to tylko 
+                #    odejmuje ich ilosc w backlogu 
+                # 3) Jesli ilosc orderow jest wieksza niz zamowien w backlog_sell, to odejmuje ilosc zamowien w backlog_sell 
+                #    od orderow oraz kasuje cale zamowienie w backlog_sell. Nastepnie sprawdzam, czy backlog_sell jest pusty. 
+                #    Jesli jest pusty, to dodaje pozostale orders do backlog_buy.
+                # 4) Wracam do kroku 1 jesli ilosc zamowien w order>0
                 while(order[1] > 0):
                     if (backlog_sell[0,0] > order[0]):
                         backlog_buy = queue_dec_add_item(backlog_buy, order[0], order[1])
